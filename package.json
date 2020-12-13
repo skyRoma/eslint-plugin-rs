@@ -1,0 +1,10 @@
+{
+  "name": "custom-eslint",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.15.0",
+    "eslint-plugin-custom": "file:eslint-plugin-custom"
+  }
+}
