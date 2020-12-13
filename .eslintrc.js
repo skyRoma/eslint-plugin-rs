@@ -9,7 +9,7 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: "module",
   },
-  plugins: ["eslint-plugin-custom"],
+  plugins: ["custom"],
   rules: {
     "custom/no-template-literals": 2,
     "custom/no-hardcoded-strings": 1,

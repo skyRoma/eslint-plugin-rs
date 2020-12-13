@@ -1,6 +1,6 @@
-# eslint-plugin-custom-2
+# custom-eslint-plugin
 
-test
+Contains examples of custom `eslint` rules
 
 ## Installation
 
@@ -10,21 +10,21 @@ You'll first need to install [ESLint](http://eslint.org):
 $ npm i eslint --save-dev
 ```
 
-Next, install `eslint-plugin-custom-2`:
+Next, install `eslint-plugin-custom`:
 
 ```
-$ npm install eslint-plugin-custom-2 --save-dev
+$ npm i --save-dev file:./eslint-plugin-custom
 ```
 
 
 ## Usage
 
-Add `custom-2` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
+Add `eslint-plugin-custom` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
 
 ```json
 {
     "plugins": [
-        "custom-2"
+        "custom"
     ]
 }
 ```
@@ -35,16 +35,7 @@ Then configure the rules you want to use under the rules section.
 ```json
 {
     "rules": {
-        "custom-2/rule-name": 2
+        "custom/rule-name": 2
     }
 }
 ```
-
-## Supported Rules
-
-* Fill in provided rules here
-
-
-
-
-
