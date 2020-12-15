@@ -11,8 +11,9 @@ module.exports = {
   },
   plugins: ["custom"],
   rules: {
-    "custom/no-template-literals": 2,
-    "custom/no-hardcoded-strings": 1,
-    "custom/separate-line-for-decorators": 2,
+    "custom/no-template-literals": "error",
+    "custom/no-hardcoded-strings": "warn",
+    "custom/separate-line-for-decorators": "error",
+    "custom/separated-expect-expresion(s)": "error",
   },
 };
