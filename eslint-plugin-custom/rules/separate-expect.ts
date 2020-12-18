@@ -1,6 +1,6 @@
 import { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils';
 
-const LINES_DIFF = 2;
+type context = Readonly<TSESLint.RuleContext<string, unknown[]>>;
 
 export const expectRule: TSESLint.RuleModule<string, unknown[]> = {
   meta: {
@@ -17,55 +17,21 @@ export const expectRule: TSESLint.RuleModule<string, unknown[]> = {
   },
   create: context => ({
     CallExpression: (node: TSESTree.CallExpression) => {
-      const sourceCode = context.getSourceCode();
       const arrowFnIndex = 1;
+
       if (isTestClosureFn(node, arrowFnIndex)) {
         const body = (node.arguments[
           arrowFnIndex
         ] as TSESTree.ArrowFunctionExpression).body as TSESTree.BlockStatement;
+
         body.body.forEach((statement, index, statements) => {
-          if (isExpectStatement(statement)) {
-            if (isLineMissedBefore(index, statements, sourceCode)) {
-              context.report({
-                node: statement,
-                messageId: 'lineBefore',
-                fix: function (fixer: TSESLint.RuleFixer) {
-                  return fixer.insertTextBefore(statement, '\n');
-                },
-              });
-            }
-
-            if (isLineMissedAfter(index, statements, sourceCode)) {
-              context.report({
-                node: statement,
-                messageId: 'lineAfter',
-                fix: function (fixer: TSESLint.RuleFixer) {
-                  return fixer.insertTextAfter(statement, '\n');
-                },
-              });
-            }
-
-            if (isExtraLineBefore(index, statements, sourceCode)) {
-              context.report({
-                node: statement,
-                messageId: 'expectGroup',
-                fix: function (fixer: TSESLint.RuleFixer) {
-                  const prevStatementEnd = statements[index - 1].range[1];
-                  const currentStatementStart = statement.range[0];
-
-                  return fixer.removeRange([
-                    prevStatementEnd,
-                    currentStatementStart,
-                  ]);
-                },
-              });
-            }
-          }
+          handleStatement(context, statement, index, statements);
         });
       }
     },
   }),
 };
+
 function isTestClosureFn(
   expression: TSESTree.CallExpression,
   arrowFnIndex: number
@@ -79,96 +45,16 @@ function isTestClosureFn(
   );
 }
 
-function isLineMissedBefore(
-  currendIndex: number,
-  body: TSESTree.Statement[],
-  sourceCode: TSESLint.SourceCode
+function handleStatement(
+  context: context,
+  statement: TSESTree.Statement,
+  index: number,
+  statements: TSESTree.Statement[]
 ) {
-  const currentStatement = body[currendIndex];
-  const prevStatement = body[currendIndex - 1];
-  if (
-    isFirstStatementOrCommentsExist(
-      currendIndex,
-      prevStatement,
-      currentStatement,
-      sourceCode
-    )
-  ) {
-    return false;
+  if (isExpectStatement(statement)) {
+    handleLineBefore(context, index, statements);
+    handleLineAfter(context, index, statements);
   }
-
-  if (
-    !isExpectStatement(prevStatement) &&
-    currentStatement.loc.start.line !== prevStatement.loc.end.line + LINES_DIFF
-  ) {
-    return true;
-  }
-
-  return false;
-}
-
-function isLineMissedAfter(
-  currendIndex: number,
-  body: TSESTree.Statement[],
-  sourceCode: TSESLint.SourceCode
-) {
-  const currentStatement = body[currendIndex];
-  const nextStatement = body[currendIndex + 1];
-  if (
-    currendIndex === body.length - 1 ||
-    areCommentsBetween(currentStatement, nextStatement, sourceCode)
-  ) {
-    return false;
-  }
-
-  if (
-    !isExpectStatement(nextStatement) &&
-    currentStatement.loc.end.line !== nextStatement.loc.start.line - LINES_DIFF
-  ) {
-    return true;
-  }
-
-  return false;
-}
-
-function isExtraLineBefore(
-  currendIndex: number,
-  body: TSESTree.Statement[],
-  sourceCode: TSESLint.SourceCode
-) {
-  const currentStatement = body[currendIndex];
-  const prevStatement = body[currendIndex - 1];
-  if (
-    isFirstStatementOrCommentsExist(
-      currendIndex,
-      prevStatement,
-      currentStatement,
-      sourceCode
-    )
-  ) {
-    return false;
-  }
-
-  if (
-    isExpectStatement(prevStatement) &&
-    currentStatement.loc.start.line === prevStatement.loc.end.line + LINES_DIFF
-  ) {
-    return true;
-  }
-
-  return false;
-}
-
-function isFirstStatementOrCommentsExist(
-  currendIndex: number,
-  prevStatement: TSESTree.Statement,
-  currentStatement: TSESTree.Statement,
-  sourceCode: TSESLint.SourceCode
-) {
-  return (
-    currendIndex === 0 ||
-    areCommentsBetween(prevStatement, currentStatement, sourceCode)
-  );
 }
 
 function isExpectStatement(statement: TSESTree.Statement) {
@@ -185,6 +71,138 @@ function isExpectStatement(statement: TSESTree.Statement) {
   }
 
   return false;
+}
+
+function handleLineBefore(
+  context: context,
+  index: number,
+  statements: TSESTree.Statement[]
+) {
+  const currentStatement = statements[index];
+  const prevStatement = statements[index - 1];
+  const sourceCode = context.getSourceCode();
+
+  if (
+    isFirstStatementOrCommentsExist(prevStatement, currentStatement, sourceCode)
+  ) {
+    return;
+  }
+
+  if (isLineMissedBefore(currentStatement, prevStatement)) {
+    handleMissedLineBefore(context, currentStatement);
+  }
+
+  if (isExtraLineBefore(currentStatement, prevStatement)) {
+    handleExtraLineBefore(context, currentStatement, prevStatement);
+  }
+}
+
+function isFirstStatementOrCommentsExist(
+  prevStatement: TSESTree.Statement,
+  currentStatement: TSESTree.Statement,
+  sourceCode: TSESLint.SourceCode
+) {
+  return (
+    !prevStatement ||
+    areCommentsBetween(prevStatement, currentStatement, sourceCode)
+  );
+}
+
+function isLineMissedBefore(
+  currentStatement: TSESTree.Statement,
+  prevStatement: TSESTree.Statement
+) {
+  return (
+    !isExpectStatement(prevStatement) &&
+    !isEmptyLineBetween(prevStatement, currentStatement)
+  );
+}
+
+function handleMissedLineBefore(
+  context: context,
+  statement: TSESTree.Statement
+) {
+  context.report({
+    node: statement,
+    messageId: 'lineBefore',
+    fix: function (fixer: TSESLint.RuleFixer) {
+      return fixer.insertTextBefore(statement, '\n');
+    },
+  });
+}
+
+function isExtraLineBefore(
+  currentStatement: TSESTree.Statement,
+  prevStatement: TSESTree.Statement
+) {
+  return (
+    isExpectStatement(prevStatement) &&
+    isEmptyLineBetween(prevStatement, currentStatement)
+  );
+}
+
+function handleExtraLineBefore(
+  context: context,
+  currentStatement: TSESTree.Statement,
+  prevStatement: TSESTree.Statement
+) {
+  context.report({
+    node: currentStatement,
+    messageId: 'expectGroup',
+    fix: function (fixer: TSESLint.RuleFixer) {
+      const prevStatementEnd = prevStatement.range[1];
+      const currentStatementStart = currentStatement.range[0];
+
+      return fixer.removeRange([prevStatementEnd, currentStatementStart]);
+    },
+  });
+}
+
+function handleLineAfter(
+  context: context,
+  index: number,
+  statements: TSESTree.Statement[]
+) {
+  const currentStatement = statements[index];
+  const sourceCode = context.getSourceCode();
+
+  if (isLineMissedAfter(index, statements, sourceCode, currentStatement)) {
+    handleMissedLineAfter(context, currentStatement);
+  }
+}
+
+function isLineMissedAfter(
+  currendIndex: number,
+  satetements: TSESTree.Statement[],
+  sourceCode: TSESLint.SourceCode,
+  currentStatement: TSESTree.Statement
+) {
+  const nextStatement = satetements[currendIndex + 1];
+
+  if (
+    !nextStatement ||
+    areCommentsBetween(currentStatement, nextStatement, sourceCode)
+  ) {
+    return false;
+  }
+
+  return (
+    !isExpectStatement(nextStatement) &&
+    !isEmptyLineBetween(currentStatement, nextStatement)
+  );
+}
+
+function handleMissedLineAfter(
+  context: context,
+  statement: TSESTree.Statement
+) {
+  context.report({
+    node: statement,
+    messageId: 'lineAfter',
+    fix: function (fixer: TSESLint.RuleFixer) {
+      return fixer.insertTextAfter(statement, '\n');
+    },
+  });
 }
 
 function checkObject(object: TSESTree.LeftHandSideExpression): boolean {
@@ -210,5 +228,16 @@ function areCommentsBetween(
 ) {
   return (
     left.range && right.range && sourceCode.commentsExistBetween(left, right)
+  );
+}
+
+function isEmptyLineBetween(
+  prevStatement: TSESTree.Statement,
+  currentStatement: TSESTree.Statement
+) {
+  const linesDiff = 2;
+
+  return (
+    currentStatement.loc.start.line === prevStatement.loc.end.line + linesDiff
   );
 }

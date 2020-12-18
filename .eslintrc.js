@@ -16,7 +16,7 @@ module.exports = {
       { blankLine: 'always', prev: 'block-like', next: 'block-like' },
     ],
     'custom/no-template-literals': 'error',
-    'custom/no-hardcoded-strings': 'warn',
+    'custom/no-magic-strings': 'warn',
     'custom/separate-line-for-decorators': 'error',
     'custom/separate-expect-expresion(s)': 'error',
   },
