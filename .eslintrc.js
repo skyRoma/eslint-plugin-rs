@@ -1,19 +1,23 @@
 module.exports = {
   env: {
     browser: true,
+    commonjs: true,
     es2021: true,
-    node: true,
   },
-  parser: "babel-eslint",
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 2020,
-    sourceType: "module",
+    ecmaVersion: 12,
   },
-  plugins: ["custom"],
+  plugins: ['@typescript-eslint', 'custom'],
   rules: {
-    "custom/no-template-literals": "error",
-    "custom/no-hardcoded-strings": "warn",
-    "custom/separate-line-for-decorators": "error",
-    "custom/separated-expect-expresion(s)": "error",
+    'padding-line-between-statements': [
+      'error',
+      { blankLine: 'always', prev: 'block-like', next: 'block-like' },
+    ],
+    'custom/no-template-literals': 'error',
+    'custom/no-hardcoded-strings': 'warn',
+    'custom/separate-line-for-decorators': 'error',
+    'custom/separate-expect-expresion(s)': 'error',
   },
 };

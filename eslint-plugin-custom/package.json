@@ -1,8 +1,5 @@
 {
   "name": "eslint-plugin-custom",
   "version": "1.0.0",
-  "main": "index.js",
-  "devDependencies": {
-    "@babel/types": "^7.12.10"
-  }
+  "main": "index.js"
 }

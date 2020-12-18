@@ -2,9 +2,16 @@
   "name": "custom-eslint",
   "version": "1.0.0",
   "main": "index.js",
+  "scripts": {
+    "build": "./node_modules/.bin/tsc",
+    "lint": "./node_modules/.bin/eslint"
+  },
   "devDependencies": {
-    "babel-eslint": "^10.1.0",
+    "@typescript-eslint/eslint-plugin": "^4.10.0",
+    "@typescript-eslint/parser": "^4.10.0",
+    "@typescript-eslint/experimental-utils": "^4.10.0",
     "eslint": "^7.15.0",
-    "eslint-plugin-custom": "file:eslint-plugin-custom"
+    "eslint-plugin-custom": "file:eslint-plugin-custom",
+    "typescript": "^4.1.3"
   }
 }
