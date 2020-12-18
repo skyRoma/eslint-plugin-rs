@@ -2,11 +2,10 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "CommonJS",
-    "sourceMap": true,
-    "outDir": "dist",
     "moduleResolution": "node",
     "baseUrl": ".",
     "lib": ["ESNext"],
+    "outDir": "dist",
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
@@ -27,8 +26,7 @@
     "isolatedModules": true,
     "resolveJsonModule": true,
     "allowJs": true,
-    "noEmit": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
   },
   "exclude": ["node_modules"],
   "include": ["**/*.ts"]

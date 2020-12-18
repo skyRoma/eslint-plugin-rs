@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "./node_modules/.bin/tsc",
+    "build": "tsc",
     "lint": "./node_modules/.bin/eslint"
   },
   "devDependencies": {
