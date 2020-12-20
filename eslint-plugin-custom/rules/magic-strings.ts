@@ -5,7 +5,6 @@ export const magicStringsRule: TSESLint.RuleModule<string, unknown[]> = {
     type: 'suggestion',
     schema: [],
     messages: { forbidden: 'Do not use magic strings' },
-    fixable: 'code',
   },
   create: context => ({
     CallExpression: (node: TSESTree.CallExpression) => {

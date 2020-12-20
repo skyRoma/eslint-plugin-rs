@@ -52,8 +52,17 @@ function handleStatement(
   statements: TSESTree.Statement[]
 ) {
   if (isExpectStatement(statement)) {
-    handleLineBefore(context, index, statements);
-    handleLineAfter(context, index, statements);
+    const sourceCode = context.getSourceCode();
+    const currentStatement = statements[index];
+    const prevStatement = statements[index - 1];
+    const nextStatement = statements[index + 1];
+
+    if (prevStatement) {
+      handleLineBefore(context, sourceCode, currentStatement, prevStatement);
+    }
+    if (nextStatement) {
+      handleLineAfter(context, sourceCode, currentStatement, nextStatement);
+    }
   }
 }
 
@@ -75,16 +84,11 @@ function isExpectStatement(statement: TSESTree.Statement) {
 
 function handleLineBefore(
   context: context,
-  index: number,
-  statements: TSESTree.Statement[]
+  sourceCode: TSESLint.SourceCode,
+  currentStatement: TSESTree.Statement,
+  prevStatement: TSESTree.Statement
 ) {
-  const currentStatement = statements[index];
-  const prevStatement = statements[index - 1];
-  const sourceCode = context.getSourceCode();
-
-  if (
-    isFirstStatementOrCommentsExist(prevStatement, currentStatement, sourceCode)
-  ) {
+  if (areCommentsBetween(prevStatement, currentStatement, sourceCode)) {
     return;
   }
 
@@ -95,17 +99,6 @@ function handleLineBefore(
   if (isExtraLineBefore(currentStatement, prevStatement)) {
     handleExtraLineBefore(context, currentStatement, prevStatement);
   }
-}
-
-function isFirstStatementOrCommentsExist(
-  prevStatement: TSESTree.Statement,
-  currentStatement: TSESTree.Statement,
-  sourceCode: TSESLint.SourceCode
-) {
-  return (
-    !prevStatement ||
-    areCommentsBetween(prevStatement, currentStatement, sourceCode)
-  );
 }
 
 function isLineMissedBefore(
@@ -160,32 +153,23 @@ function handleExtraLineBefore(
 
 function handleLineAfter(
   context: context,
-  index: number,
-  statements: TSESTree.Statement[]
+  sourceCode: TSESLint.SourceCode,
+  currentStatement: TSESTree.Statement,
+  nextStatement: TSESTree.Statement
 ) {
-  const currentStatement = statements[index];
-  const sourceCode = context.getSourceCode();
+  if (areCommentsBetween(currentStatement, nextStatement, sourceCode)) {
+    return;
+  }
 
-  if (isLineMissedAfter(index, statements, sourceCode, currentStatement)) {
+  if (isLineMissedAfter(currentStatement, nextStatement)) {
     handleMissedLineAfter(context, currentStatement);
   }
 }
 
 function isLineMissedAfter(
-  currendIndex: number,
-  satetements: TSESTree.Statement[],
-  sourceCode: TSESLint.SourceCode,
-  currentStatement: TSESTree.Statement
+  currentStatement: TSESTree.Statement,
+  nextStatement: TSESTree.Statement
 ) {
-  const nextStatement = satetements[currendIndex + 1];
-
-  if (
-    !nextStatement ||
-    areCommentsBetween(currentStatement, nextStatement, sourceCode)
-  ) {
-    return false;
-  }
-
   return (
     !isExpectStatement(nextStatement) &&
     !isEmptyLineBetween(currentStatement, nextStatement)

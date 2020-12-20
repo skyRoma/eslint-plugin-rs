@@ -5,7 +5,6 @@ export const templateLiteralsRule: TSESLint.RuleModule<string, unknown[]> = {
     type: 'suggestion',
     schema: [],
     messages: { forbidden: 'Do not use template literals' },
-    fixable: 'code',
   },
   create: context => ({
     TemplateLiteral: (node: TSESTree.TemplateLiteral) => {
