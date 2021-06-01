@@ -10,5 +10,5 @@ export const rules: Record<string, TSESLint.RuleModule<string, unknown[]>> = {
   'no-template-literals': templateLiteralsRule,
   'no-magic-strings': magicStringsRule,
   'separate-line-for-decorators': decoratorsRule,
-  'separate-expect-expresion(s)': expectRule,
+  'separate-expect-expression(s)': expectRule,
 };

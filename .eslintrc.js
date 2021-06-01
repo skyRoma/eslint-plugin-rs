@@ -18,6 +18,6 @@ module.exports = {
     'custom/no-template-literals': 'error',
     'custom/no-magic-strings': 'warn',
     'custom/separate-line-for-decorators': 'error',
-    'custom/separate-expect-expresion(s)': 'error',
+    'custom/separate-expect-expression(s)': 'error',
   },
 };

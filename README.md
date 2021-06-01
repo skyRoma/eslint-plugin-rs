@@ -39,3 +39,7 @@ Then configure the rules you want to use under the rules section.
     }
 }
 ```
+
+Useful links for creating custom rules:
+- https://astexplorer.net/
+- https://resources.jointjs.com/demos/rappid/apps/Ast/index.html

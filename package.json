@@ -4,14 +4,14 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "lint": "./node_modules/.bin/eslint"
+    "lint": "eslint index.js"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.10.0",
-    "@typescript-eslint/parser": "^4.10.0",
     "@typescript-eslint/experimental-utils": "^4.10.0",
+    "@typescript-eslint/parser": "^4.10.0",
     "eslint": "^7.15.0",
-    "eslint-plugin-custom": "file:eslint-plugin-custom",
+    "eslint-plugin-custom": "file:dist",
     "typescript": "^4.1.3"
   }
 }

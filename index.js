@@ -1,4 +1,5 @@
-/* eslint-disable custom/no-hardcoded-strings */
+/* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const a = 3;
 const testString = `${3} apples`;
 
