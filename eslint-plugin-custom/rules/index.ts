@@ -2,3 +2,8 @@ export * from './separate-expect';
 export * from './separate-decorators';
 export * from './magic-strings';
 export * from './template-literals';
+export * from './srp';
+export * from './ocp';
+export * from './lsp';
+export * from './isp';
+export * from './dip';

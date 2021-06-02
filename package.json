@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "lint": "eslint index.js"
+    "lint": "eslint index.ts"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.10.0",

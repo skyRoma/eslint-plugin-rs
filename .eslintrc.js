@@ -19,5 +19,10 @@ module.exports = {
     'custom/no-magic-strings': 'warn',
     'custom/separate-line-for-decorators': 'error',
     'custom/separate-expect-expression(s)': 'error',
+    'custom/solid-srp': 'error',
+    'custom/solid-ocp': 'warn',
+    'custom/solid-lsp': 'error',
+    'custom/solid-isp': 'error',
+    'custom/solid-dip': 'error',
   },
 };

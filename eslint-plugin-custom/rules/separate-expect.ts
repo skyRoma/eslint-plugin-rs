@@ -20,9 +20,9 @@ export const expectRule: TSESLint.RuleModule<string, unknown[]> = {
       const arrowFnIndex = 1;
 
       if (isTestClosureFn(node, arrowFnIndex)) {
-        const body = (node.arguments[
-          arrowFnIndex
-        ] as TSESTree.ArrowFunctionExpression).body as TSESTree.BlockStatement;
+        const body = (
+          node.arguments[arrowFnIndex] as TSESTree.ArrowFunctionExpression
+        ).body as TSESTree.BlockStatement;
 
         body.body.forEach((statement, index, statements) => {
           handleStatement(context, statement, index, statements);
@@ -60,6 +60,7 @@ function handleStatement(
     if (prevStatement) {
       handleLineBefore(context, sourceCode, currentStatement, prevStatement);
     }
+
     if (nextStatement) {
       handleLineAfter(context, sourceCode, currentStatement, nextStatement);
     }

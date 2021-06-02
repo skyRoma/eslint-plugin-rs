@@ -4,7 +4,7 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "baseUrl": ".",
-    "lib": ["ESNext"],
+    "lib": ["ESNext","DOM"],
     "outDir": "dist",
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
