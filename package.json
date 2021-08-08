@@ -6,6 +6,16 @@
   "license": "MIT",
   "repository": "https://github.com/skyRoma/eslint-plugin-rs",
   "homepage": "https://github.com/skyRoma/eslint-plugin-rs",
+  "keywords": [
+    "eslint",
+    "lint",
+    "eslintplugin",
+    "eslint-plugin",
+    "eslint-expect",
+    "expect",
+    "eslint-decorators",
+    "decorators"
+  ],
   "files": [
     "lib"
   ],
