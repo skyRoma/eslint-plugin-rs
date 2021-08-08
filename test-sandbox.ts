@@ -1,8 +1,3 @@
-/* eslint-disable custom/no-magic-strings */
-/* eslint-disable custom/no-template-literals */
-/* eslint-disable no-undef */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 const a = 3;
 const testString = `${3} apples`;
 

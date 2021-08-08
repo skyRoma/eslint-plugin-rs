@@ -1,41 +1,32 @@
-# custom-eslint-plugin
+# eslint-plugin-rs
 
-Contains examples of custom `eslint` rules
+Contains `eslint` rules for tests and decorators
 
 ## Installation
 
-You'll first need to install [ESLint](http://eslint.org):
+Run the following command to install `eslint-plugin-rs`:
 
 ```
-$ npm i eslint --save-dev
+$ npm i --save-dev eslint-plugin-rs
 ```
-
-Next, install `eslint-plugin-custom`:
-
-```
-$ npm i --save-dev file:./eslint-plugin-custom
-```
-
 
 ## Usage
 
-Add `eslint-plugin-custom` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
+Add `eslint-plugin-rs` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
 
-```json
+```js
 {
-    "plugins": [
-        "custom"
-    ]
+  plugins: ['rs'],
 }
 ```
 
+Then configure the rules you want to use under the rules section:
 
-Then configure the rules you want to use under the rules section.
-
-```json
+```js
 {
     "rules": {
-        "custom/rule-name": "error"
+      'rs/separate-line-for-decorators': 'error',
+      'rs/separate-expect-expression(s)': 'error',
     }
 }
 ```
