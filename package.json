@@ -2,6 +2,7 @@
   "name": "eslint-plugin-rs",
   "version": "1.0.0",
   "main": "lib/index.js",
+  "description": "Contains eslint rules for tests and decorators",
   "files": [
     "lib"
   ],
