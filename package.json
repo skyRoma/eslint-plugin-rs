@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "lib/index.js",
   "description": "Contains eslint rules for tests and decorators",
+  "license": "MIT",
+  "repository": "https://github.com/skyRoma/eslint-plugin-rs",
+  "homepage": "https://github.com/skyRoma/eslint-plugin-rs",
   "files": [
     "lib"
   ],
