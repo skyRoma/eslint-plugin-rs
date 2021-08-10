@@ -31,6 +31,18 @@ Then configure the rules you want to use under the rules section:
 }
 ```
 
+### Examples
+
+expect
+</br>
+
+<img src="assets/expect-example.gif" />
+
+decorators
+
+<img src="assets/decorator-example.gif" />
+
 Useful links for creating custom rules:
+
 - https://astexplorer.net/
 - https://resources.jointjs.com/demos/rappid/apps/Ast/index.html
