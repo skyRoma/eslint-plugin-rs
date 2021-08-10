@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-rs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "lib/index.js",
   "description": "Contains eslint rules for tests and decorators",
   "license": "MIT",
