@@ -1,6 +1,13 @@
-import { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils';
+import { TSESLint, TSESTree, AST_NODE_TYPES } from '@typescript-eslint/utils';
 
 export const ISPRule: TSESLint.RuleModule<string, unknown[]> = {
+  create: context => ({
+    ClassDeclaration: (node: TSESTree.ClassDeclaration) => {
+      if (node.superClass) {
+        checkMethodsReturnValue(node, context);
+      }
+    },
+  }),
   meta: {
     type: 'suggestion',
     schema: [],
@@ -9,13 +16,7 @@ export const ISPRule: TSESLint.RuleModule<string, unknown[]> = {
         'Return null in inherited methods may violate the ISP principle',
     },
   },
-  create: context => ({
-    ClassDeclaration: (node: TSESTree.ClassDeclaration) => {
-      if (node.superClass) {
-        checkMethodsReturnValue(node, context);
-      }
-    },
-  }),
+  defaultOptions: [],
 };
 
 function checkMethodsReturnValue(
@@ -24,11 +25,11 @@ function checkMethodsReturnValue(
 ) {
   return body.body.forEach(item => {
     if (
-      item.type === 'MethodDefinition' &&
+      item.type === AST_NODE_TYPES.MethodDefinition &&
       item.value.body?.body.some(
         i =>
-          i.type === 'ReturnStatement' &&
-          i.argument?.type === 'Literal' &&
+          i.type === AST_NODE_TYPES.ReturnStatement &&
+          i.argument?.type === AST_NODE_TYPES.Literal &&
           i.argument?.value === null
       )
     ) {

@@ -1,14 +1,8 @@
-import { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils';
+import { TSESLint, TSESTree } from '@typescript-eslint/utils';
 
 export const decoratorsRule: TSESLint.RuleModule<string, unknown[]> = {
-  meta: {
-    type: 'layout',
-    schema: [],
-    messages: { forbidden: 'Decorator must be on a a separate line' },
-    fixable: 'code',
-  },
   create: context => ({
-    ClassProperty: (node: TSESTree.ClassProperty) => {
+    PropertyDefinition: (node: TSESTree.PropertyDefinition) => {
       if (isDecoratorOnTheSameLine(node)) {
         context.report({
           node,
@@ -20,9 +14,16 @@ export const decoratorsRule: TSESLint.RuleModule<string, unknown[]> = {
       }
     },
   }),
+  meta: {
+    type: 'layout',
+    schema: [],
+    messages: { forbidden: 'Decorator must be on a a separate line' },
+    fixable: 'code',
+  },
+  defaultOptions: [],
 };
 
-function isDecoratorOnTheSameLine(node: TSESTree.ClassProperty) {
+function isDecoratorOnTheSameLine(node: TSESTree.PropertyDefinition) {
   const { decorators } = node;
 
   return (

@@ -20,15 +20,20 @@
     "lib"
   ],
   "scripts": {
-    "prebuild": "rm -rf lib",
+    "prebuild": "rimraf lib",
     "build": "tsc",
-    "lint": "eslint test-sandbox.ts"
+    "lint": "eslint test-sandbox.ts",
+    "check-libs-updates": "ncu",
+    "libs:update:patch": "ncu -u --target patch && npm i",
+    "libs:update:minor": "ncu -u --target minor && npm i",
+    "libs:update:major": "ncu -u && npm i"
   },
   "devDependencies": {
-    "@typescript-eslint/experimental-utils": "^4.10.0",
-    "@typescript-eslint/parser": "^4.10.0",
-    "eslint": "^7.15.0",
-    "eslint-plugin-rs": "file:lib",
-    "typescript": "^4.1.3"
+    "@typescript-eslint/experimental-utils": "^5.56.0",
+    "@typescript-eslint/parser": "^5.56.0",
+    "eslint": "^8.36.0",
+    "npm-check-updates": "^16.7.13",
+    "rimraf": "^4.4.0",
+    "typescript": "^5.0.2"
   }
 }

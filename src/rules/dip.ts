@@ -1,23 +1,17 @@
-import { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils';
+import { TSESLint, TSESTree, AST_NODE_TYPES } from '@typescript-eslint/utils';
 
 export const DIPRule: TSESLint.RuleModule<string, unknown[]> = {
-  meta: {
-    type: 'suggestion',
-    schema: [],
-    messages: {
-      forbidden:
-        'using classes without referring an interface may violate the DIP principle',
-    },
-  },
   create: context => ({
     Program: (node: TSESTree.Program) => {
       node.body.forEach(item => {
-        if (item.type === 'ClassDeclaration') {
+        if (item.type === AST_NODE_TYPES.ClassDeclaration) {
           item.body.body.forEach(i => {
             if (
-              i.type === 'ClassProperty' &&
-              i.typeAnnotation?.typeAnnotation.type === 'TSTypeReference' &&
-              i.typeAnnotation?.typeAnnotation.typeName.type === 'Identifier'
+              i.type === AST_NODE_TYPES.PropertyDefinition &&
+              i.typeAnnotation?.typeAnnotation.type ===
+                AST_NODE_TYPES.TSTypeReference &&
+              i.typeAnnotation?.typeAnnotation.typeName.type ===
+                AST_NODE_TYPES.Identifier
             ) {
               const { name } = i.typeAnnotation?.typeAnnotation.typeName;
 
@@ -33,10 +27,21 @@ export const DIPRule: TSESLint.RuleModule<string, unknown[]> = {
       });
     },
   }),
+  meta: {
+    type: 'suggestion',
+    schema: [],
+    messages: {
+      forbidden:
+        'using classes without referring an interface may violate the DIP principle',
+    },
+  },
+  defaultOptions: [],
 };
 
 function isClassName(node: TSESTree.Program, typeName: string) {
   return node.body.some(
-    item => item.type === 'ClassDeclaration' && item.id?.name === typeName
+    item =>
+      item.type === AST_NODE_TYPES.ClassDeclaration &&
+      item.id?.name === typeName
   );
 }

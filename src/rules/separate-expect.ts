@@ -1,20 +1,8 @@
-import { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils';
+import { TSESLint, TSESTree, AST_NODE_TYPES } from '@typescript-eslint/utils';
 
 type context = Readonly<TSESLint.RuleContext<string, unknown[]>>;
 
 export const expectRule: TSESLint.RuleModule<string, unknown[]> = {
-  meta: {
-    type: 'layout',
-    schema: [],
-    messages: {
-      lineBefore:
-        "'expect' should be on the separate line. Insert empty line before it",
-      lineAfter:
-        "'expect' should be on the separate line. Insert empty line after it",
-      expectGroup: "'expect' should not be separate from the 'expect' group",
-    },
-    fixable: 'code',
-  },
   create: context => ({
     CallExpression: (node: TSESTree.CallExpression) => {
       const arrowFnIndex = 1;
@@ -30,6 +18,19 @@ export const expectRule: TSESLint.RuleModule<string, unknown[]> = {
       }
     },
   }),
+  meta: {
+    type: 'layout',
+    schema: [],
+    messages: {
+      lineBefore:
+        "'expect' should be on the separate line. Insert empty line before it",
+      lineAfter:
+        "'expect' should be on the separate line. Insert empty line after it",
+      expectGroup: "'expect' should not be separate from the 'expect' group",
+    },
+    fixable: 'code',
+  },
+  defaultOptions: [],
 };
 
 function isTestClosureFn(
@@ -37,11 +38,12 @@ function isTestClosureFn(
   arrowFnIndex: number
 ) {
   return (
-    expression.type === 'CallExpression' &&
-    expression.callee.type === 'Identifier' &&
+    expression.type === AST_NODE_TYPES.CallExpression &&
+    expression.callee.type === AST_NODE_TYPES.Identifier &&
     expression.callee.name === 'it' &&
     expression.arguments[arrowFnIndex] &&
-    expression.arguments[arrowFnIndex].type === 'ArrowFunctionExpression'
+    expression.arguments[arrowFnIndex].type ===
+      AST_NODE_TYPES.ArrowFunctionExpression
   );
 }
 
@@ -68,13 +70,13 @@ function handleStatement(
 }
 
 function isExpectStatement(statement: TSESTree.Statement) {
-  if (statement.type === 'ExpressionStatement') {
+  if (statement.type === AST_NODE_TYPES.ExpressionStatement) {
     const { expression } = statement;
 
-    if (expression.type === 'CallExpression') {
+    if (expression.type === AST_NODE_TYPES.CallExpression) {
       const { callee } = expression;
 
-      if (callee.type === 'MemberExpression') {
+      if (callee.type === AST_NODE_TYPES.MemberExpression) {
         return checkObject(callee.object as TSESTree.LeftHandSideExpression);
       }
     }
@@ -191,13 +193,15 @@ function handleMissedLineAfter(
 }
 
 function checkObject(object: TSESTree.LeftHandSideExpression): boolean {
-  if (object.type === 'CallExpression') {
+  if (object.type === AST_NODE_TYPES.CallExpression) {
     const { callee } = object;
 
-    return callee.type === 'Identifier' && callee.name === 'expect';
+    return (
+      callee.type === AST_NODE_TYPES.Identifier && callee.name === 'expect'
+    );
   }
 
-  if (object.type === 'MemberExpression') {
+  if (object.type === AST_NODE_TYPES.MemberExpression) {
     return checkObject(
       object.object as TSESTree.CallExpression | TSESTree.MemberExpression
     );
